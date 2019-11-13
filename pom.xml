@@ -8,6 +8,13 @@
 
     <packaging>jar</packaging>
     <version>7.0.0</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-services</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+    </dependencies>
     <name>Keycloak-services</name>
 
     <properties>
@@ -15,18 +22,11 @@
         <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-services</artifactId>
-            <version>RELEASE</version>
-        </dependency>
-    </dependencies>
 
     <repositories>
         <repository>
             <id>org.keycloak.services.resources</id>
-            <url>https://github.com/keycloak/keycloak/tree/master/services</url>
+            <url>https://github.com/keycloak/keycloak/tree/master/services/src/main/java/org/keycloak</url>
         </repository>
     </repositories>
 
