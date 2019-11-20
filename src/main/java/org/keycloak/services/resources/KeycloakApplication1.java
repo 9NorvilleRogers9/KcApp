@@ -29,8 +29,6 @@ public class KeycloakApplication1 extends KeycloakApplication {
     protected Set<Object> mySingletons = new HashSet<Object>();
 
     private boolean marker;
-    private boolean registrationMarker=false;
-    private boolean emptyFile=false;
 
     public KeycloakApplication1(@Context ServletContext context,@Context Dispatcher dispatcher) {
         super(context ,dispatcher);
@@ -50,36 +48,15 @@ public class KeycloakApplication1 extends KeycloakApplication {
                 mySingletons.add(o);
             }
             else{
-                firstUserRegistrationReader();
-                checkFile();
                 marker=bootstrapAdminUser.get();
-                if ((marker==true) && (registrationMarker==true)) {
-                    mySingletons.add(new WelcomeResource1(false));
-                    singletons=mySingletons;}
-                if((marker==true)&&(registrationMarker==false)&&(emptyFile==true)) {
-                    mySingletons.add(new WelcomeResource1(true));
-                    singletons=mySingletons;
-                }
+                firstUserRegistrationReader();
+                mySingletons.add(new WelcomeResource1(marker));
+                singletons=mySingletons;
+
             }
         }
     }
 
-    private  void checkFile()
-    {
-        try(FileInputStream inFile = new FileInputStream("D://NetCracker//Keycloak//keycloak-7.0.0//keycloak-7.0.0//FirstAdminValidation.txt")) {
-
-            int b = inFile.read();
-            if (b == -1)
-            {
-                emptyFile=true;
-            }
-
-        }
-        catch(IOException ex)
-        {
-            logger.warn("File not found", ex);
-        }
-    }
 
     private  void firstUserRegistrationReader()
     {
@@ -90,7 +67,7 @@ public class KeycloakApplication1 extends KeycloakApplication {
 
                 if(i=='1')
                 {
-                    registrationMarker=true;
+                    marker=false;
                 }
             }
         }

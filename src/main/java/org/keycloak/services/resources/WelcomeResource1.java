@@ -49,8 +49,10 @@ public class WelcomeResource1 extends WelcomeResource {
 
     }
 
+
     @Override
     public Response createUser(MultivaluedMap<String, String> formData) {
+
         checkBootstrap(bootstrap);
         return super.createUser(formData);
     }
