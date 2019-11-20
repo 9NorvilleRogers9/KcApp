@@ -26,56 +26,46 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class KeycloakApplication1 extends KeycloakApplication {
 
     private static final Logger logger = Logger.getLogger(KeycloakApplication.class);
-    protected Set<Object> mySingletons = new HashSet<Object>();
 
-    private boolean marker;
+    public KeycloakApplication1(@Context ServletContext context, @Context Dispatcher dispatcher) {
+        super(context, dispatcher);
 
-    public KeycloakApplication1(@Context ServletContext context,@Context Dispatcher dispatcher) {
-        super(context ,dispatcher);
-            final AtomicBoolean bootstrapAdminUser = new AtomicBoolean(false);
-            KeycloakModelUtils.runJobInTransaction(sessionFactory, new KeycloakSessionTask() {
-                @Override
-                public void run(KeycloakSession session) {
-                    boolean shouldBootstrapAdmin = new ApplianceBootstrap(session).isNoMasterUser();
-                    bootstrapAdminUser.set(shouldBootstrapAdmin);
-                }
-
-            });
-
-        for(Object o:singletons) {
-            if(!(o instanceof WelcomeResource))
-            {
+        Set<Object> mySingletons = new HashSet<Object>();
+        for (Object o : singletons) {
+            if (o instanceof WelcomeResource) {
+                AtomicBoolean marker = getMarker();
+                mySingletons.add(new WelcomeResource1(marker.get()));
+            } else {
                 mySingletons.add(o);
             }
-            else{
-                marker=bootstrapAdminUser.get();
-                firstUserRegistrationReader();
-                mySingletons.add(new WelcomeResource1(marker));
-                singletons=mySingletons;
-
-            }
         }
+        singletons = mySingletons;
     }
 
 
-    private  void firstUserRegistrationReader()
-    {
-        try(FileInputStream inFile = new FileInputStream("D://NetCracker//Keycloak//keycloak-7.0.0//keycloak-7.0.0//FirstAdminValidation.txt"))
-        {
-            int i=-1;
-            while((i=inFile.read())!=-1){
+    private AtomicBoolean getMarker() {
+        final AtomicBoolean bootstrapAdminUser = new AtomicBoolean(false);
+        try (FileInputStream inFile = new FileInputStream("D://NetCracker//Keycloak//keycloak-7.0.0//keycloak-7.0.0//FirstAdminValidation.txt")) {
+            int i = -1;
+            while ((i = inFile.read()) != -1) {
 
-                if(i=='1')
-                {
-                    marker=false;
+                if (i == '1') {
+                    return bootstrapAdminUser;
                 }
             }
-        }
-
-        catch(IOException ex)
-        {
+        } catch (IOException ex) {
             logger.warn("File not found", ex);
         }
+
+        KeycloakModelUtils.runJobInTransaction(sessionFactory, new KeycloakSessionTask() {
+            @Override
+            public void run(KeycloakSession session) {
+                boolean shouldBootstrapAdmin = new ApplianceBootstrap(session).isNoMasterUser();
+                bootstrapAdminUser.set(shouldBootstrapAdmin);
+            }
+
+        });
+        return bootstrapAdminUser;
     }
 
 }
