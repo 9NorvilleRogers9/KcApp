@@ -15,6 +15,8 @@ import org.keycloak.services.util.CookieHelper;
 import org.keycloak.theme.BrowserSecurityHeaderSetup;
 import org.keycloak.theme.FreeMarkerUtil;
 import org.keycloak.theme.Theme;
+import representations.SettingsRepresentation;
+import spi.SettingsService;
 
 
 import java.io.FileInputStream;
@@ -42,6 +44,8 @@ public class WelcomeResource1 extends WelcomeResource {
 
     private boolean bootstrap;
 
+    private SettingsRepresentation sr;
+
     public WelcomeResource1(boolean bootstrap) {
 
         super(bootstrap);
@@ -61,10 +65,10 @@ public class WelcomeResource1 extends WelcomeResource {
     {
         if(bootstrap==true)
         {
-            firstUserRegistrationWriter();
+            setSettings();
         }
     }
-    private void firstUserRegistrationWriter()
+    private void setSettings()
     {
         try (FileOutputStream outFile = new FileOutputStream("D://NetCracker//Keycloak//keycloak-7.0.0//keycloak-7.0.0//FirstAdminValidation.txt"))
         {
@@ -78,6 +82,11 @@ public class WelcomeResource1 extends WelcomeResource {
         {
             logger.warn("File not found", ex);
         }
+    }
+
+   // private void setSettings(SettingsRepresentation sr)
+    {
+        session.getProvider(SettingsService.class).addSettings(sr);
     }
 
 

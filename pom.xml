@@ -24,6 +24,22 @@
             <artifactId>keycloak-services</artifactId>
             <version>7.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-model-jpa</artifactId>
+            <version>4.8.3.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-model-jpa</artifactId>
+            <version>4.8.3.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-model-jpa</artifactId>
+            <version>4.8.3.Final</version>
+        </dependency>
     </dependencies>
     <name>Keycloak-services</name>
 

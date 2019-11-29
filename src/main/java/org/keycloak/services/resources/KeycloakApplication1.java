@@ -33,7 +33,7 @@ public class KeycloakApplication1 extends KeycloakApplication {
         Set<Object> mySingletons = new HashSet<Object>();
         for (Object o : singletons) {
             if (o instanceof WelcomeResource) {
-                AtomicBoolean marker = getMarker();
+                AtomicBoolean marker = getSettings();
                 mySingletons.add(new WelcomeResource1(marker.get()));
             } else {
                 mySingletons.add(o);
@@ -43,7 +43,7 @@ public class KeycloakApplication1 extends KeycloakApplication {
     }
 
 
-    private AtomicBoolean getMarker() {
+    private AtomicBoolean getSettings() {
         final AtomicBoolean bootstrapAdminUser = new AtomicBoolean(false);
         try (FileInputStream inFile = new FileInputStream("D://NetCracker//Keycloak//keycloak-7.0.0//keycloak-7.0.0//FirstAdminValidation.txt")) {
             int i = -1;
