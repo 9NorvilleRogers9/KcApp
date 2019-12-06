@@ -3,23 +3,19 @@ package entities;
 import org.keycloak.models.jpa.entities.UserEntity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import javax.persistence.Entity;
 
 @Entity
-@Table(name = "SETTINGS-ENTITY")
+@Table(name = "SETTINGS")
 public class SettingsEntity {
 
     @Id
-    @Column(name = "KEY", length = 36)
-    @Access(AccessType.PROPERTY)
+    @Column(name = "KEY", nullable = false)
     protected String key;
 
-    @Column(name = "VALUE")
+    @Column(name = "VALUE",nullable = false)
     private  String value ;
-
 
     public String getKey() {
         return key;
@@ -36,10 +32,6 @@ public class SettingsEntity {
     public void setValue(String value) {
         this.value = value;
     }
-
-
-
-
 
 }
 

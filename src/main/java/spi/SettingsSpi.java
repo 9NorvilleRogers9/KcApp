@@ -19,12 +19,12 @@ public class SettingsSpi implements Spi {
     @Override
     public Class<? extends Provider> getProviderClass() {
 
-        return Service.class;
+        return SettingsService.class;
     }
 
     @Override
     public Class<? extends ProviderFactory> getProviderFactoryClass() {
 
-        return ServiceProviderFactory.class;
+        return SettingsServiceProviderFactory.class;
     }
 }

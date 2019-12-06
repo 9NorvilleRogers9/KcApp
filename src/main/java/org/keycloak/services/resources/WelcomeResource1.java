@@ -1,43 +1,22 @@
 package org.keycloak.services.resources;
 
-import org.keycloak.common.ClientConnection;
-import org.keycloak.common.Version;
-import org.keycloak.common.util.Base64Url;
-import org.keycloak.models.BrowserSecurityHeaders;
+import org.keycloak.connections.jpa.JpaConnectionProvider;
 import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.utils.KeycloakModelUtils;
-import org.keycloak.services.ForbiddenException;
-import org.keycloak.services.ServicesLogger;
-import org.keycloak.services.Urls;
-import org.keycloak.services.managers.ApplianceBootstrap;
-import org.keycloak.services.util.CacheControlUtil;
-import org.keycloak.services.util.CookieHelper;
-import org.keycloak.theme.BrowserSecurityHeaderSetup;
-import org.keycloak.theme.FreeMarkerUtil;
-import org.keycloak.theme.Theme;
 import representations.SettingsRepresentation;
 import spi.SettingsService;
 
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import javax.ws.rs.WebApplicationException;
+import javax.persistence.EntityManager;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.*;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
 
+@Path("/")
 public class WelcomeResource1 extends WelcomeResource {
 
 
     private static final String KEYCLOAK_STATE_CHECKER = "WELCOME_STATE_CHECKER";
     @Context
-    private KeycloakSession session;
+    private KeycloakSession session ;
 
     @Context
     protected HttpHeaders headers;
@@ -46,10 +25,12 @@ public class WelcomeResource1 extends WelcomeResource {
 
     private SettingsRepresentation sr;
 
-    public WelcomeResource1(boolean bootstrap) {
+    public WelcomeResource1(boolean bootstrap, KeycloakSession session , SettingsRepresentation sr) {
 
         super(bootstrap);
         this.bootstrap=bootstrap;
+        this.session=session;
+        this.sr=sr;
 
     }
 
@@ -65,10 +46,10 @@ public class WelcomeResource1 extends WelcomeResource {
     {
         if(bootstrap==true)
         {
-            setSettings();
+            setSettings(sr);
         }
     }
-    private void setSettings()
+   /* private void setSettings()
     {
         try (FileOutputStream outFile = new FileOutputStream("D://NetCracker//Keycloak//keycloak-7.0.0//keycloak-7.0.0//FirstAdminValidation.txt"))
         {
@@ -82,12 +63,9 @@ public class WelcomeResource1 extends WelcomeResource {
         {
             logger.warn("File not found", ex);
         }
+    }*/
+
+    private void setSettings(SettingsRepresentation settings) {
+        session.getProvider(SettingsService.class).addSettings(settings);
     }
-
-   // private void setSettings(SettingsRepresentation sr)
-    {
-        session.getProvider(SettingsService.class).addSettings(sr);
-    }
-
-
 }
