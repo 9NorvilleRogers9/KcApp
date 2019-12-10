@@ -1,17 +1,12 @@
 package org.keycloak.services.resources;
-
-import org.keycloak.connections.jpa.JpaConnectionProvider;
 import org.keycloak.models.KeycloakSession;
 import representations.SettingsRepresentation;
 import spi.SettingsService;
-
-
-import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.*;
 
 @Path("/")
-public class WelcomeResource1 extends WelcomeResource {
+public class CustomWelcomeResource extends WelcomeResource {
 
 
     private static final String KEYCLOAK_STATE_CHECKER = "WELCOME_STATE_CHECKER";
@@ -25,15 +20,13 @@ public class WelcomeResource1 extends WelcomeResource {
 
     private SettingsRepresentation sr;
 
-    public WelcomeResource1(boolean bootstrap, KeycloakSession session , SettingsRepresentation sr) {
+    public CustomWelcomeResource(boolean bootstrap, KeycloakSession session , SettingsRepresentation sr) {
 
         super(bootstrap);
         this.bootstrap=bootstrap;
         this.session=session;
         this.sr=sr;
-
     }
-
 
     @Override
     public Response createUser(MultivaluedMap<String, String> formData) {
@@ -49,23 +42,13 @@ public class WelcomeResource1 extends WelcomeResource {
             setSettings(sr);
         }
     }
-   /* private void setSettings()
-    {
-        try (FileOutputStream outFile = new FileOutputStream("D://NetCracker//Keycloak//keycloak-7.0.0//keycloak-7.0.0//FirstAdminValidation.txt"))
-        {
-
-            String text = "1";
-            byte[] buffer = text.getBytes();
-            outFile.write(buffer, 0, buffer.length);
-        }
-
-        catch(IOException ex)
-        {
-            logger.warn("File not found", ex);
-        }
-    }*/
 
     private void setSettings(SettingsRepresentation settings) {
+        //String currentClass = this.getClass().getSimpleName();
+        final  String currentClass = "CustomWelcomeResource";
+        String value = Boolean.toString(bootstrap);
+        settings.setKey(currentClass);
+        settings.setValue(value);
         session.getProvider(SettingsService.class).addSettings(settings);
     }
 }

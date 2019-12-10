@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="javax.persistence-api-2.21">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Keycloak/keycloak-7.0.0/keycloak-7.0.0/modules/system/layers/base/javax/persistence/api/javax.persistence-api-2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

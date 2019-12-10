@@ -7,13 +7,10 @@ import java.util.List;
 
 public interface SettingsService extends Provider {
 
-    //List<SettingsRepresentation> listSettings();
+    List<SettingsRepresentation> listSettings(SettingsRepresentation settingsRepresentation);
 
     SettingsRepresentation findSettings(String key);
 
-    SettingsRepresentation addSettings(SettingsRepresentation settings);
-
-
-
+    void addSettings(SettingsRepresentation settings);
 
 }

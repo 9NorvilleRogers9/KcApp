@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 
 @Entity
 @Table(name = "SETTINGS")
+@NamedQueries({ @NamedQuery(name = "findByKey", query = "from SettingsEntity  where key = :key") })
 public class SettingsEntity {
 
     @Id
