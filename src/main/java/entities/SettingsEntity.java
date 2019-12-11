@@ -8,14 +8,15 @@ import javax.persistence.Entity;
 
 @Entity
 @Table(name = "SETTINGS")
-@NamedQueries({ @NamedQuery(name = "findByKey", query = "from SettingsEntity  where key = :key") })
+//@NamedQuery(name = "findKey", query = "SELECT b FROM SettingsEntity b WHERE  b.key = :key")
+@NamedQueries({ @NamedQuery(name = "findKey", query = "from SettingsEntity  where key = :key") })
 public class SettingsEntity {
 
     @Id
-    @Column(name = "KEY", nullable = false)
+    @Column(name = "key", nullable = false)
     protected String key;
 
-    @Column(name = "VALUE",nullable = false)
+    @Column(name = "value",nullable = false)
     private  String value ;
 
     public String getKey() {

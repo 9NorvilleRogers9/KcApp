@@ -9,10 +9,13 @@ import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.services.managers.ApplianceBootstrap;
 import representations.SettingsRepresentation;
 import spi.SettingsService;
+import spi.SettingsServiceProviderFactory;
+import spi.impl.SettingsServiceProviderFactoryImpl;
 //import java.util.concurrent.atomic;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -43,11 +46,6 @@ public class CustomKeycloakApplication extends KeycloakApplication {
     private AtomicBoolean getSettings() {
         final AtomicBoolean bootstrapAdminUser = new AtomicBoolean(false);
 
-        sr = sessions.getProvider(SettingsService.class).findSettings("CustomWelcomeResource");
-        if ((sr.getValue() == "true") && (sr!=null))
-            {
-                return bootstrapAdminUser;
-            }
 
             KeycloakModelUtils.runJobInTransaction(sessionFactory, new KeycloakSessionTask() {
                 @Override
@@ -58,6 +56,13 @@ public class CustomKeycloakApplication extends KeycloakApplication {
                 }
 
             });
+        sr = sessions.getProvider(SettingsService.class).findSettings("CustomWelcomeResource");
+        if ((sr.getValue() == "true") && (sr!=null))
+        {
             return bootstrapAdminUser;
+        }
+
+            return bootstrapAdminUser;
+
         }
 }
