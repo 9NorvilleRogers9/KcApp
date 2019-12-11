@@ -2,7 +2,6 @@ package spi.impl;
 
 import entities.SettingsEntity;
 
-
 import org.keycloak.connections.jpa.JpaConnectionProvider;
 import org.keycloak.models.KeycloakSession;
 import representations.SettingsRepresentation;
@@ -10,8 +9,7 @@ import spi.SettingsService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.ws.rs.NotFoundException;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,12 +38,6 @@ public class SettingsServiceImpl implements SettingsService {
         return result;
     }
 
-    /*@Override
-    public SettingsRepresentation findSettings(String key) {
-        SettingsEntity entity= getEntityManager().find(SettingsEntity.class, key);
-        //session.getProvider(JpaConnectionProvider.class).getEntityManager().createNamedQuery("from SettingsEntity  where key = :key",SettingsEntity.class).setParameter("key",settingsRepresentation.getKey()).getResultList();
-        return entity==null ? null : new SettingsRepresentation(entity);
-    }*/
     @Override
     public SettingsRepresentation findSettings(String key) {
         SettingsEntity entity=findByKey(key);
@@ -61,12 +53,14 @@ public class SettingsServiceImpl implements SettingsService {
         getEntityManager().persist(entity);
     }
     private SettingsEntity findByKey(String key) {
-
+        try {
             SettingsEntity settingsEntity = getEntityManager().createNamedQuery("findKey", SettingsEntity.class)
                     .setParameter("key", key)
                     .getSingleResult();
             return settingsEntity;
-
+        } catch (NoResultException e) {
+            return null;
+        }
 
     }
 

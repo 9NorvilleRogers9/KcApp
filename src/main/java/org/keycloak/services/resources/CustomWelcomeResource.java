@@ -20,11 +20,11 @@ public class CustomWelcomeResource extends WelcomeResource {
 
     private SettingsRepresentation sr;
 
-    public CustomWelcomeResource(boolean bootstrap, KeycloakSession session , SettingsRepresentation sr) {
+    public CustomWelcomeResource(boolean bootstrap/*, KeycloakSession session*/ , SettingsRepresentation sr) {
 
         super(bootstrap);
         this.bootstrap=bootstrap;
-        this.session=session;
+        //this.session=session;
         this.sr=sr;
     }
 
@@ -44,7 +44,6 @@ public class CustomWelcomeResource extends WelcomeResource {
     }
 
     private void setSettings(SettingsRepresentation settings) {
-        //String currentClass = this.getClass().getSimpleName();
         final  String currentClass = "CustomWelcomeResource";
         String value = Boolean.toString(bootstrap);
         settings.setKey(currentClass);

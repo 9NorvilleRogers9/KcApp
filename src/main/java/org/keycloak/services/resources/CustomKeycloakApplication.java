@@ -9,13 +9,10 @@ import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.services.managers.ApplianceBootstrap;
 import representations.SettingsRepresentation;
 import spi.SettingsService;
-import spi.SettingsServiceProviderFactory;
-import spi.impl.SettingsServiceProviderFactoryImpl;
 //import java.util.concurrent.atomic;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -35,7 +32,11 @@ public class CustomKeycloakApplication extends KeycloakApplication {
         for (Object o : singletons) {
             if (o instanceof WelcomeResource) {
                 AtomicBoolean marker = getSettings();
-                mySingletons.add(new CustomWelcomeResource(marker.get(), sessions, sr));
+                if(sr==null)
+                {
+                    sr=new SettingsRepresentation(settingsEntity);
+                }
+                mySingletons.add(new CustomWelcomeResource(marker.get(), sr));
             } else {
                 mySingletons.add(o);
             }
@@ -46,22 +47,28 @@ public class CustomKeycloakApplication extends KeycloakApplication {
     private AtomicBoolean getSettings() {
         final AtomicBoolean bootstrapAdminUser = new AtomicBoolean(false);
 
-
             KeycloakModelUtils.runJobInTransaction(sessionFactory, new KeycloakSessionTask() {
                 @Override
                 public void run(KeycloakSession session) {
                     boolean shouldBootstrapAdmin = new ApplianceBootstrap(session).isNoMasterUser();
                     bootstrapAdminUser.set(shouldBootstrapAdmin);
-                    sessions = session;
+                    sr = session.getProvider(SettingsService.class).findSettings("CustomWelcomeResource");
+                    if(sr==null)
+                    {
+                        bootstrapAdminUser.set(shouldBootstrapAdmin);
+                        return;
+                    }
+                    if ((sr.getValue().equals("true")) && (sr!=null))
+                    {
+                        bootstrapAdminUser.set(false);
+                    }
+                    else {
+
+                        bootstrapAdminUser.set(shouldBootstrapAdmin);
+                    }
+
                 }
-
             });
-        sr = sessions.getProvider(SettingsService.class).findSettings("CustomWelcomeResource");
-        if ((sr.getValue() == "true") && (sr!=null))
-        {
-            return bootstrapAdminUser;
-        }
-
             return bootstrapAdminUser;
 
         }
