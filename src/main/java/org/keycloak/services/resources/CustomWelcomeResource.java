@@ -20,11 +20,10 @@ public class CustomWelcomeResource extends WelcomeResource {
 
     private SettingsRepresentation sr;
 
-    public CustomWelcomeResource(boolean bootstrap/*, KeycloakSession session*/ , SettingsRepresentation sr) {
+    public CustomWelcomeResource(boolean bootstrap, SettingsRepresentation sr) {
 
         super(bootstrap);
         this.bootstrap=bootstrap;
-        //this.session=session;
         this.sr=sr;
     }
 

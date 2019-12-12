@@ -47,29 +47,24 @@ public class CustomKeycloakApplication extends KeycloakApplication {
     private AtomicBoolean getSettings() {
         final AtomicBoolean bootstrapAdminUser = new AtomicBoolean(false);
 
-            KeycloakModelUtils.runJobInTransaction(sessionFactory, new KeycloakSessionTask() {
-                @Override
-                public void run(KeycloakSession session) {
-                    boolean shouldBootstrapAdmin = new ApplianceBootstrap(session).isNoMasterUser();
+        KeycloakModelUtils.runJobInTransaction(sessionFactory, new KeycloakSessionTask() {
+            @Override
+            public void run(KeycloakSession session) {
+                boolean shouldBootstrapAdmin = new ApplianceBootstrap(session).isNoMasterUser();
+                sr = session.getProvider(SettingsService.class).findSettings("CustomWelcomeResource");
+                if(sr==null)
+                {
                     bootstrapAdminUser.set(shouldBootstrapAdmin);
-                    sr = session.getProvider(SettingsService.class).findSettings("CustomWelcomeResource");
-                    if(sr==null)
-                    {
-                        bootstrapAdminUser.set(shouldBootstrapAdmin);
-                        return;
-                    }
-                    if ((sr.getValue().equals("true")) && (sr!=null))
-                    {
-                        bootstrapAdminUser.set(false);
-                    }
-                    else {
-
-                        bootstrapAdminUser.set(shouldBootstrapAdmin);
-                    }
-
+                    return;
                 }
-            });
-            return bootstrapAdminUser;
+                if ((sr.getValue().equals("true")) && (sr!=null))
+                {
+                    bootstrapAdminUser.set(false);
+                }
 
-        }
+            }
+        });
+        return bootstrapAdminUser;
+
+    }
 }
