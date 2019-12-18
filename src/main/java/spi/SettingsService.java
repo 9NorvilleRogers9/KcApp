@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface SettingsService extends Provider {
 
-    List<SettingsRepresentation> listSettings(SettingsRepresentation settingsRepresentation);
-
     SettingsRepresentation findSettings(String key);
 
     void addSettings(SettingsRepresentation settings);

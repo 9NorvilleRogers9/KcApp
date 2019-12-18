@@ -10,10 +10,6 @@ import spi.SettingsService;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-import java.util.LinkedList;
-import java.util.List;
-
-
 public class SettingsServiceImpl implements SettingsService {
 
     private final KeycloakSession session;
@@ -26,24 +22,12 @@ public class SettingsServiceImpl implements SettingsService {
     private EntityManager getEntityManager() {
         return session.getProvider(JpaConnectionProvider.class).getEntityManager();
     }
-    @Override
-    public List<SettingsRepresentation> listSettings(SettingsRepresentation settingsRepresentation) {
-        List<SettingsEntity> companyEntities = session.getProvider(JpaConnectionProvider.class).getEntityManager().createNamedQuery("findKey", SettingsEntity.class)
-                .setParameter("key","CustomWelcomeResource")
-                .getResultList();
-        List<SettingsRepresentation> result = new LinkedList<>();
-        for (SettingsEntity entity : companyEntities) {
-            result.add(new SettingsRepresentation(entity));
-        }
-        return result;
-    }
 
     @Override
     public SettingsRepresentation findSettings(String key) {
         SettingsEntity entity=findByKey(key);
         return entity==null ? null : new SettingsRepresentation(entity);
     }
-
 
     @Override
     public void addSettings(SettingsRepresentation settings) {
@@ -52,6 +36,7 @@ public class SettingsServiceImpl implements SettingsService {
         entity.setValue(settings.getValue());
         getEntityManager().persist(entity);
     }
+
     private SettingsEntity findByKey(String key) {
         try {
             SettingsEntity settingsEntity = getEntityManager().createNamedQuery("findKey", SettingsEntity.class)
@@ -61,7 +46,6 @@ public class SettingsServiceImpl implements SettingsService {
         } catch (NoResultException e) {
             return null;
         }
-
     }
 
     @Override

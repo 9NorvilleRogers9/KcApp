@@ -20,10 +20,6 @@ public class CustomKeycloakApplication extends KeycloakApplication {
 
     private static final Logger logger = Logger.getLogger(KeycloakApplication.class);
 
-    private KeycloakSession sessions;
-    SettingsEntity settingsEntity = new SettingsEntity();
-    SettingsRepresentation sr = new SettingsRepresentation(settingsEntity);
-
     public CustomKeycloakApplication(@Context ServletContext context, @Context Dispatcher dispatcher) {
         super(context, dispatcher);
 
@@ -32,11 +28,7 @@ public class CustomKeycloakApplication extends KeycloakApplication {
         for (Object o : singletons) {
             if (o instanceof WelcomeResource) {
                 AtomicBoolean marker = getSettings();
-                if(sr==null)
-                {
-                    sr=new SettingsRepresentation(settingsEntity);
-                }
-                mySingletons.add(new CustomWelcomeResource(marker.get(), sr));
+                mySingletons.add(new CustomWelcomeResource(marker.get()));
             } else {
                 mySingletons.add(o);
             }
@@ -51,20 +43,49 @@ public class CustomKeycloakApplication extends KeycloakApplication {
             @Override
             public void run(KeycloakSession session) {
                 boolean shouldBootstrapAdmin = new ApplianceBootstrap(session).isNoMasterUser();
-                sr = session.getProvider(SettingsService.class).findSettings("CustomWelcomeResource");
-                if(sr==null)
+                final String key="WasTheFirstRegistration";
+                SettingsRepresentation sr = session.getProvider(SettingsService.class).findSettings(key);
+                if((sr==null) && (shouldBootstrapAdmin == true))
                 {
                     bootstrapAdminUser.set(shouldBootstrapAdmin);
                     return;
                 }
-                if ((sr.getValue().equals("true")) && (sr!=null))
+                if ((sr!=null) && (sr.getValue().equals("true")) )
                 {
                     bootstrapAdminUser.set(false);
                 }
-
+                if((sr==null) && (shouldBootstrapAdmin == false))
+                {
+                    final String value ="true";
+                    SettingsRepresentation settings = new SettingsRepresentation(new SettingsEntity());
+                    settings.setKey(key);
+                    settings.setValue(value);
+                    session.getProvider(SettingsService.class).addSettings(settings);
+                }
             }
         });
         return bootstrapAdminUser;
 
     }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

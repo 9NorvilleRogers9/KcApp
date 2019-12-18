@@ -1,4 +1,5 @@
 package org.keycloak.services.resources;
+import entities.SettingsEntity;
 import org.keycloak.models.KeycloakSession;
 import representations.SettingsRepresentation;
 import spi.SettingsService;
@@ -8,23 +9,15 @@ import javax.ws.rs.core.*;
 @Path("/")
 public class CustomWelcomeResource extends WelcomeResource {
 
-
-    private static final String KEYCLOAK_STATE_CHECKER = "WELCOME_STATE_CHECKER";
     @Context
     private KeycloakSession session ;
 
-    @Context
-    protected HttpHeaders headers;
-
     private boolean bootstrap;
 
-    private SettingsRepresentation sr;
-
-    public CustomWelcomeResource(boolean bootstrap, SettingsRepresentation sr) {
+    public CustomWelcomeResource(boolean bootstrap) {
 
         super(bootstrap);
         this.bootstrap=bootstrap;
-        this.sr=sr;
     }
 
     @Override
@@ -38,15 +31,33 @@ public class CustomWelcomeResource extends WelcomeResource {
     {
         if(bootstrap==true)
         {
-            setSettings(sr);
+            setSettings();
         }
     }
 
-    private void setSettings(SettingsRepresentation settings) {
-        final  String currentClass = "CustomWelcomeResource";
-        String value = Boolean.toString(bootstrap);
-        settings.setKey(currentClass);
-        settings.setValue(value);
-        session.getProvider(SettingsService.class).addSettings(settings);
-    }
+   private void setSettings() {
+       final  String key = "WasTheFirstRegistration";
+       String value = Boolean.toString(bootstrap);
+       SettingsRepresentation settings = new SettingsRepresentation(new SettingsEntity());
+       settings.setKey(key);
+       settings.setValue(value);
+       session.getProvider(SettingsService.class).addSettings(settings);
+   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
