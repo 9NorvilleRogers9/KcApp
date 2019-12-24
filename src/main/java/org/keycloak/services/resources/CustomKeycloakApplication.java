@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CustomKeycloakApplication extends KeycloakApplication {
 
+	public static final String WasTheFirstRegistration="WasTheFirstRegistration";
     private static final Logger logger = Logger.getLogger(KeycloakApplication.class);
 
     public CustomKeycloakApplication(@Context ServletContext context, @Context Dispatcher dispatcher) {
@@ -42,26 +43,28 @@ public class CustomKeycloakApplication extends KeycloakApplication {
         KeycloakModelUtils.runJobInTransaction(sessionFactory, new KeycloakSessionTask() {
             @Override
             public void run(KeycloakSession session) {
-                boolean shouldBootstrapAdmin = new ApplianceBootstrap(session).isNoMasterUser();
-                final String key="WasTheFirstRegistration";
-                SettingsRepresentation sr = session.getProvider(SettingsService.class).findSettings(key);
-                if((sr==null) && (shouldBootstrapAdmin == true))
+                
+                
+                SettingsRepresentation sr = session.getProvider(SettingsService.class).findSettings(WasTheFirstRegistration);
+                if(sr==null)
                 {
+					boolean shouldBootstrapAdmin = new ApplianceBootstrap(session).isNoMasterUser();
                     bootstrapAdminUser.set(shouldBootstrapAdmin);
-                    return;
+                    if(shouldBootstrapAdmin == false)
+						{
+							final String value ="true";
+							SettingsRepresentation settings = new SettingsRepresentation(new SettingsEntity());
+							settings.setKey(WasTheFirstRegistration);
+							settings.setValue(value);
+							session.getProvider(SettingsService.class).addSettings(settings);
+						}
                 }
-                if ((sr!=null) && (sr.getValue().equals("true")) )
-                {
-                    bootstrapAdminUser.set(false);
-                }
-                if((sr==null) && (shouldBootstrapAdmin == false))
-                {
-                    final String value ="true";
-                    SettingsRepresentation settings = new SettingsRepresentation(new SettingsEntity());
-                    settings.setKey(key);
-                    settings.setValue(value);
-                    session.getProvider(SettingsService.class).addSettings(settings);
-                }
+				else 
+				{
+					 bootstrapAdminUser.set(!Boolean.valueOf(sr.getValue()));
+				}
+                
+                
             }
         });
         return bootstrapAdminUser;
