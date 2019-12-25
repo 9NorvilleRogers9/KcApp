@@ -1,14 +1,11 @@
 package entities;
 
-import org.keycloak.models.jpa.entities.UserEntity;
-
 import javax.persistence.*;
 
 import javax.persistence.Entity;
 
 @Entity
 @Table(name = "SETTINGS")
-//@NamedQuery(name = "findKey", query = "SELECT b FROM SettingsEntity b WHERE  b.key = :key")
 @NamedQueries({ @NamedQuery(name = "findKey", query = "from SettingsEntity  where key = :key") })
 public class SettingsEntity {
 

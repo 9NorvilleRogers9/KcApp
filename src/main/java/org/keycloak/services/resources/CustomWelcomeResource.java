@@ -7,7 +7,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.*;
 
 @Path("/")
-public class CustomWelcomeResource extends WelcomeResource {
+public class CustomWelcomeResource extends WelcomeResource implements Constants {
 
     @Context
     private KeycloakSession session ;
@@ -27,7 +27,7 @@ public class CustomWelcomeResource extends WelcomeResource {
         return super.createUser(formData);
     }
 
-    private  void checkBootstrap(boolean bootstrap)
+    private void checkBootstrap(boolean bootstrap)
     {
         if(bootstrap==true)
         {
@@ -36,10 +36,9 @@ public class CustomWelcomeResource extends WelcomeResource {
     }
 
    private void setSettings() {
-       final  String key = "WasTheFirstRegistration";
        String value = Boolean.toString(bootstrap);
        SettingsRepresentation settings = new SettingsRepresentation(new SettingsEntity());
-       settings.setKey(key);
+       settings.setKey(WasTheFirstRegistration);
        settings.setValue(value);
        session.getProvider(SettingsService.class).addSettings(settings);
    }

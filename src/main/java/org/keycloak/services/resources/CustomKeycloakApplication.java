@@ -9,16 +9,14 @@ import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.services.managers.ApplianceBootstrap;
 import representations.SettingsRepresentation;
 import spi.SettingsService;
-//import java.util.concurrent.atomic;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CustomKeycloakApplication extends KeycloakApplication {
+public class CustomKeycloakApplication extends KeycloakApplication implements Constants {
 
-	public static final String WasTheFirstRegistration="WasTheFirstRegistration";
     private static final Logger logger = Logger.getLogger(KeycloakApplication.class);
 
     public CustomKeycloakApplication(@Context ServletContext context, @Context Dispatcher dispatcher) {
@@ -43,8 +41,7 @@ public class CustomKeycloakApplication extends KeycloakApplication {
         KeycloakModelUtils.runJobInTransaction(sessionFactory, new KeycloakSessionTask() {
             @Override
             public void run(KeycloakSession session) {
-                
-                
+
                 SettingsRepresentation sr = session.getProvider(SettingsService.class).findSettings(WasTheFirstRegistration);
                 if(sr==null)
                 {
@@ -52,10 +49,9 @@ public class CustomKeycloakApplication extends KeycloakApplication {
                     bootstrapAdminUser.set(shouldBootstrapAdmin);
                     if(shouldBootstrapAdmin == false)
 						{
-							final String value ="true";
 							SettingsRepresentation settings = new SettingsRepresentation(new SettingsEntity());
 							settings.setKey(WasTheFirstRegistration);
-							settings.setValue(value);
+							settings.setValue(TheFirstRegistrationValue );
 							session.getProvider(SettingsService.class).addSettings(settings);
 						}
                 }
@@ -63,8 +59,6 @@ public class CustomKeycloakApplication extends KeycloakApplication {
 				{
 					 bootstrapAdminUser.set(!Boolean.valueOf(sr.getValue()));
 				}
-                
-                
             }
         });
         return bootstrapAdminUser;

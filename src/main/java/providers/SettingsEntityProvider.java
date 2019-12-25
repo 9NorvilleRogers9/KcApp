@@ -20,7 +20,6 @@ public class SettingsEntityProvider implements JpaEntityProvider {
         return "META-INF/settings-changelog.xml";
     }
 
-
     @Override
     public String getFactoryId() {
         return SettingsEntityProviderFactory.ID;
